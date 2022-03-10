@@ -72,8 +72,8 @@
 					<el-input
 						v-model="postForm.content_short"
 						type="textarea"
-						class="article-textarea"
-						autosize
+						class="article-textarea-l"
+						:rows="2"
 						placeholder="请输入文章摘要"
 					/>
 					<span v-show="contentShortLength" class="word-counter"
@@ -85,7 +85,12 @@
 					<Tinymce ref="editor" v-model="postForm.content" :height="400" />
 				</el-form-item>
 
-				<el-form-item prop="image_uri" style="margin-bottom: 30px">
+				<el-form-item
+					prop="image_uri"
+					style="margin-bottom: 30px"
+					label-width="100px"
+					label="文章封面："
+				>
 					<Upload v-model="postForm.image_uri" />
 				</el-form-item>
 
@@ -272,11 +277,17 @@
 
 	.article-textarea ::v-deep {
 		textarea {
+			width: 600px;
 			padding-right: 40px;
 			resize: none;
 			border: none;
 			border-radius: 0px;
 			border-bottom: 1px solid #bfcbd9;
+		}
+	}
+	.article-textarea-l ::v-deep {
+		textarea {
+			width: 600px;
 		}
 	}
 </style>
