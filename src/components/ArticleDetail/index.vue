@@ -10,39 +10,52 @@
 				<el-row>
 					<el-col :span="24">
 						<el-form-item style="margin-bottom: 40px" prop="title">
-							<MDinput
-								v-model="postForm.title"
-								:maxlength="100"
-								name="name"
-								required
+							<el-form-item
+								label-width="100px"
+								label="文章标题："
+								class="postInfo-container-item"
 							>
-								Title
-							</MDinput>
+								<el-input
+									v-model="postForm.title"
+									type="textarea"
+									class="article-textarea"
+									autosize
+									placeholder="请输入文章标题"
+								/>
+							</el-form-item>
 						</el-form-item>
 
 						<div class="postInfo-container">
 							<el-row>
 								<el-col :span="8">
 									<el-form-item
-										label-width="60px"
-										label="Author:"
+										label-width="100px"
+										label="所属栏目："
 										class="postInfo-container-item"
 									>
-										<el-input v-model="postForm.author" />
+										<el-select v-model="postForm.category" placeholder="请选择">
+											<el-option
+												v-for="item in categoryData"
+												:key="item.value"
+												:label="item.label"
+												:value="item.value"
+											>
+											</el-option>
+										</el-select>
 									</el-form-item>
 								</el-col>
 
 								<el-col :span="10">
 									<el-form-item
-										label-width="120px"
-										label="Publish Time:"
+										label-width="100px"
+										label="发布时间："
 										class="postInfo-container-item"
 									>
 										<el-date-picker
 											v-model="displayTime"
 											type="datetime"
 											format="yyyy-MM-dd HH:mm:ss"
-											placeholder="Select date and time"
+											placeholder="选择发布时间"
 										/>
 									</el-form-item>
 								</el-col>
@@ -53,19 +66,18 @@
 
 				<el-form-item
 					style="margin-bottom: 40px"
-					label-width="70px"
-					label="Summary:"
+					label-width="100px"
+					label="文章摘要："
 				>
 					<el-input
 						v-model="postForm.content_short"
-						:rows="1"
 						type="textarea"
 						class="article-textarea"
 						autosize
-						placeholder="Please enter the content"
+						placeholder="请输入文章摘要"
 					/>
 					<span v-show="contentShortLength" class="word-counter"
-						>{{ contentShortLength }}words</span
+						>{{ contentShortLength }}字</span
 					>
 				</el-form-item>
 
@@ -76,28 +88,26 @@
 				<el-form-item prop="image_uri" style="margin-bottom: 30px">
 					<Upload v-model="postForm.image_uri" />
 				</el-form-item>
+
+				<el-button
+					v-loading="loading"
+					style="margin-left: 10px"
+					type="success"
+					@click="submitForm"
+				>
+					发布
+				</el-button>
 			</div>
-			<el-button
-				v-loading="loading"
-				style="margin-left: 10px"
-				type="success"
-				@click="submitForm"
-			>
-				发布
-			</el-button>
 		</el-form>
 	</div>
 </template>
 
 <script>
 	import Tinymce from "@/components/Tinymce";
-	import Upload from "@/components/Upload/SingleImage3";
-	import MDinput from "@/components/MDinput";
+	import Upload from "@/components/Upload/SingleImage";
 	// import { fetchArticle } from '@/api/article'
-	// import { searchUser } from '@/api/remote-search'
 
 	const defaultForm = {
-		// status: "draft",
 		title: "", // 文章题目
 		content: "", // 文章内容
 		content_short: "", // 文章摘要
@@ -110,8 +120,7 @@
 		name: "ArticleDetail",
 		components: {
 			Tinymce,
-			MDinput,
-			Upload
+			Upload,
 		},
 		props: {
 			isEdit: {
@@ -134,6 +143,25 @@
 			return {
 				postForm: Object.assign({}, defaultForm),
 				loading: false,
+				category: "3",
+				categoryData: [
+					{
+						value: "1",
+						label: "企业新闻",
+					},
+					{
+						value: "2",
+						label: "行业资讯",
+					},
+					{
+						value: "3",
+						label: "展会活动",
+					},
+					{
+						value: "4",
+						label: "视频中心",
+					},
+				],
 				rules: {
 					image_uri: [{ validator: validateRequire }],
 					title: [{ validator: validateRequire }],
@@ -147,10 +175,6 @@
 				return this.postForm.content_short.length;
 			},
 			displayTime: {
-				// set and get is useful when the data
-				// returned by the back end api is different from the front end
-				// back end return => "2013-06-25 06:59:25"
-				// front end need timestamp => 1372114765000
 				get() {
 					return +new Date(this.postForm.display_time);
 				},
@@ -164,10 +188,6 @@
 				// const id = this.$route.params && this.$route.params.id
 				// this.fetchData(id)
 			}
-
-			// Why need to make a copy of this.$route here?
-			// Because if you enter this page and quickly switch tag, may be in the execution of the setTagsViewTitle function, this.$route is no longer pointing to the current page
-			// https://github.com/PanJiaChen/vue-element-admin/issues/1221
 			this.tempRoute = Object.assign({}, this.$route);
 		},
 		methods: {
@@ -210,7 +230,6 @@
 							type: "success",
 							duration: 2000,
 						});
-						this.postForm.status = "published";
 						this.loading = false;
 					} else {
 						console.log("error submit!!");
@@ -218,25 +237,6 @@
 					}
 				});
 			},
-			// draftForm() {
-			// 	if (
-			// 		this.postForm.content.length === 0 ||
-			// 		this.postForm.title.length === 0
-			// 	) {
-			// 		this.$message({
-			// 			message: "请填写必要的标题和内容",
-			// 			type: "warning",
-			// 		});
-			// 		return;
-			// 	}
-			// 	this.$message({
-			// 		message: "保存成功",
-			// 		type: "success",
-			// 		showClose: true,
-			// 		duration: 1000,
-			// 	});
-			// 	this.postForm.status = "draft";
-			// }
 		},
 	};
 </script>

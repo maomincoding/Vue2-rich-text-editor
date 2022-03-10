@@ -61,13 +61,7 @@ export default {
       hasChange: false,
       hasInit: false,
       tinymceId: this.id,
-      fullscreen: false,
-      languageTypeList: {
-        // 'en': 'en',
-        'zh': 'zh_CN',
-        // 'es': 'es_MX',
-        // 'ja': 'ja'
-      }
+      fullscreen: false
     }
   },
   computed: {
@@ -116,7 +110,7 @@ export default {
       const _this = this
       window.tinymce.init({
         selector: `#${this.tinymceId}`,
-        language: this.languageTypeList['zh'],
+        language: 'zh_CN',
         height: this.height,
         body_class: 'panel-body ',
         object_resizing: false,
