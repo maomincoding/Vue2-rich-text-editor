@@ -9,60 +9,71 @@
 			<div class="createPost-main-container">
 				<el-row>
 					<el-col :span="24">
-						<el-form-item style="margin-bottom: 40px" prop="title">
-							<el-form-item
-								label-width="100px"
-								label="文章标题："
-								class="postInfo-container-item"
-							>
-								<el-input
-									v-model="postForm.title"
-									type="textarea"
-									class="article-textarea"
-									autosize
-									placeholder="请输入文章标题"
-								/>
-							</el-form-item>
+						<el-form-item
+							style="margin-bottom: 40px"
+							prop="title"
+							label-width="100px"
+							label="文章标题："
+							class="postInfo-container-item"
+						>
+							<el-input
+								v-model="postForm.title"
+								type="textarea"
+								class="article-textarea"
+								autosize
+								placeholder="请输入文章标题"
+							/>
 						</el-form-item>
-
-						<div class="postInfo-container">
-							<el-row>
-								<el-col :span="8">
-									<el-form-item
-										label-width="100px"
-										label="所属栏目："
-										class="postInfo-container-item"
-									>
-										<el-select v-model="postForm.category" placeholder="请选择">
-											<el-option
-												v-for="item in categoryData"
-												:key="item.value"
-												:label="item.label"
-												:value="item.value"
-											>
-											</el-option>
-										</el-select>
-									</el-form-item>
-								</el-col>
-
-								<el-col :span="10">
-									<el-form-item
-										label-width="100px"
-										label="发布时间："
-										class="postInfo-container-item"
-									>
-										<el-date-picker
-											v-model="displayTime"
-											type="datetime"
-											format="yyyy-MM-dd HH:mm:ss"
-											placeholder="选择发布时间"
-										/>
-									</el-form-item>
-								</el-col>
-							</el-row>
-						</div>
 					</el-col>
 				</el-row>
+
+				<el-form-item prop="content" style="margin-bottom: 30px">
+					<Tinymce ref="editor" v-model="postForm.content" :height="400" />
+				</el-form-item>
+				<div class="postInfo-container">
+					<el-row>
+						<el-col :span="8">
+							<el-form-item
+								label-width="100px"
+								label="所属栏目："
+								class="postInfo-container-item"
+							>
+								<el-select v-model="postForm.category" placeholder="请选择">
+									<el-option
+										v-for="item in categoryData"
+										:key="item.value"
+										:label="item.label"
+										:value="item.value"
+									>
+									</el-option>
+								</el-select>
+							</el-form-item>
+						</el-col>
+
+						<el-col :span="10">
+							<el-form-item
+								label-width="100px"
+								label="发布时间："
+								class="postInfo-container-item"
+							>
+								<el-date-picker
+									v-model="displayTime"
+									type="datetime"
+									format="yyyy-MM-dd HH:mm:ss"
+									placeholder="选择发布时间"
+								/>
+							</el-form-item>
+						</el-col>
+					</el-row>
+				</div>
+				<el-form-item
+					prop="image_uri"
+					style="margin-bottom: 30px"
+					label-width="100px"
+					label="文章封面："
+				>
+					<Upload v-model="postForm.image_uri" />
+				</el-form-item>
 
 				<el-form-item
 					style="margin-bottom: 40px"
@@ -80,20 +91,6 @@
 						>{{ contentShortLength }}字</span
 					>
 				</el-form-item>
-
-				<el-form-item prop="content" style="margin-bottom: 30px">
-					<Tinymce ref="editor" v-model="postForm.content" :height="400" />
-				</el-form-item>
-
-				<el-form-item
-					prop="image_uri"
-					style="margin-bottom: 30px"
-					label-width="100px"
-					label="文章封面："
-				>
-					<Upload v-model="postForm.image_uri" />
-				</el-form-item>
-
 				<el-button
 					v-loading="loading"
 					style="margin-left: 10px"
@@ -113,14 +110,17 @@
 	// import { fetchArticle } from '@/api/article'
 
 	const defaultForm = {
-		title: "", // 文章题目
+		title: "", // 文章标题
 		content: "", // 文章内容
 		content_short: "", // 文章摘要
-		image_uri: "", // 文章图片
+		image_uri: "", // 文章封面
 		display_time: undefined, // 前台展示时间
-		id: undefined,
 	};
-
+	const statusObj = {
+		title: "文章标题",
+		content: "文章内容",
+		image_uri: "文章封面",
+	};
 	export default {
 		name: "ArticleDetail",
 		components: {
@@ -136,11 +136,11 @@
 		data() {
 			const validateRequire = (rule, value, callback) => {
 				if (value === "") {
-					this.$message({
-						message: rule.field + "为必传项",
-						type: "error",
-					});
-					callback(new Error(rule.field + "为必传项"));
+					// this.$message({
+					// 	message: statusObj[rule.field] + "为必传项",
+					// 	type: "error",
+					// });
+					callback(new Error(statusObj[rule.field] + "为必传项"));
 				} else {
 					callback();
 				}
@@ -148,7 +148,6 @@
 			return {
 				postForm: Object.assign({}, defaultForm),
 				loading: false,
-				category: "3",
 				categoryData: [
 					{
 						value: "1",
