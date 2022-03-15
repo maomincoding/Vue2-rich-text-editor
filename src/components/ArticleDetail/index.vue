@@ -12,8 +12,6 @@
 						<el-form-item
 							style="margin-bottom: 40px"
 							prop="title"
-							label-width="100px"
-							label="文章标题："
 							class="postInfo-container-item"
 						>
 							<el-input
@@ -21,58 +19,37 @@
 								type="textarea"
 								class="article-textarea"
 								autosize
-								placeholder="请输入文章标题"
+								placeholder="请在这里输入标题"
 							/>
 						</el-form-item>
 					</el-col>
 				</el-row>
-
 				<el-form-item prop="content" style="margin-bottom: 30px">
-					<Tinymce ref="editor" v-model="postForm.content" :height="400" />
+					<Tinymce ref="editor" v-model="postForm.content" :height="600" />
 				</el-form-item>
-				<div class="postInfo-container">
-					<el-row>
-						<el-col :span="8">
-							<el-form-item
-								label-width="100px"
-								label="所属栏目："
-								class="postInfo-container-item"
-							>
-								<el-select v-model="postForm.category" placeholder="请选择">
-									<el-option
-										v-for="item in categoryData"
-										:key="item.value"
-										:label="item.label"
-										:value="item.value"
-									>
-									</el-option>
-								</el-select>
-							</el-form-item>
-						</el-col>
-
-						<el-col :span="10">
-							<el-form-item
-								label-width="100px"
-								label="发布时间："
-								class="postInfo-container-item"
-							>
-								<el-date-picker
-									v-model="displayTime"
-									type="datetime"
-									format="yyyy-MM-dd HH:mm:ss"
-									placeholder="选择发布时间"
-								/>
-							</el-form-item>
-						</el-col>
-					</el-row>
-				</div>
+				<h2>发布设置</h2>
 				<el-form-item
-					prop="image_uri"
+					label-width="100px"
+					label="所属栏目："
+					class="postInfo-container-item"
+				>
+					<el-select v-model="postForm.category" placeholder="请选择">
+						<el-option
+							v-for="item in categoryData"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value"
+						>
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item
+					prop="coverUrl"
 					style="margin-bottom: 30px"
 					label-width="100px"
 					label="文章封面："
 				>
-					<Upload v-model="postForm.image_uri" />
+					<Upload v-model="postForm.coverUrl" />
 				</el-form-item>
 
 				<el-form-item
@@ -81,15 +58,26 @@
 					label="文章摘要："
 				>
 					<el-input
-						v-model="postForm.content_short"
+						v-model="postForm.abstract"
 						type="textarea"
 						class="article-textarea-l"
 						:rows="2"
+						maxlength="100"
+						show-word-limit
 						placeholder="请输入文章摘要"
 					/>
-					<span v-show="contentShortLength" class="word-counter"
-						>{{ contentShortLength }}字</span
-					>
+				</el-form-item>
+				<el-form-item
+					label-width="100px"
+					label="发布时间："
+					class="postInfo-container-item"
+				>
+					<el-date-picker
+						v-model="pushTime"
+						type="datetime"
+						format="yyyy-MM-dd HH:mm:ss"
+						placeholder="选择发布时间"
+					/>
 				</el-form-item>
 				<el-button
 					v-loading="loading"
@@ -107,19 +95,19 @@
 <script>
 	import Tinymce from "@/components/Tinymce";
 	import Upload from "@/components/Upload/SingleImage";
-	// import { fetchArticle } from '@/api/article'
 
 	const defaultForm = {
 		title: "", // 文章标题
 		content: "", // 文章内容
-		content_short: "", // 文章摘要
-		image_uri: "", // 文章封面
-		display_time: undefined, // 前台展示时间
+		abstract: "", // 文章摘要
+		coverUrl: "", // 文章封面
+		category: "", // 所属栏目
+		pushTime: undefined, // 前台展示时间
 	};
 	const statusObj = {
-		title: "文章标题",
-		content: "文章内容",
-		image_uri: "文章封面",
+		title: "标题",
+		content: "内容",
+		coverUrl: "封面",
 	};
 	export default {
 		name: "ArticleDetail",
@@ -136,11 +124,7 @@
 		data() {
 			const validateRequire = (rule, value, callback) => {
 				if (value === "") {
-					// this.$message({
-					// 	message: statusObj[rule.field] + "为必传项",
-					// 	type: "error",
-					// });
-					callback(new Error(statusObj[rule.field] + "为必传项"));
+					callback(new Error(statusObj[rule.field] + "为必填项"));
 				} else {
 					callback();
 				}
@@ -167,7 +151,7 @@
 					},
 				],
 				rules: {
-					image_uri: [{ validator: validateRequire }],
+					coverUrl: [{ validator: validateRequire }],
 					title: [{ validator: validateRequire }],
 					content: [{ validator: validateRequire }],
 				},
@@ -175,15 +159,12 @@
 			};
 		},
 		computed: {
-			contentShortLength() {
-				return this.postForm.content_short.length;
-			},
-			displayTime: {
+			pushTime: {
 				get() {
-					return +new Date(this.postForm.display_time);
+					return +new Date(this.postForm.pushTime);
 				},
 				set(val) {
-					this.postForm.display_time = new Date(val);
+					this.postForm.pushTime = new Date(val).getTime();
 				},
 			},
 		},
@@ -201,7 +182,7 @@
 
 			//     // just for test
 			//     this.postForm.title += `   Article Id:${this.postForm.id}`
-			//     this.postForm.content_short += `   Article Id:${this.postForm.id}`
+			//     this.postForm.abstract += `   Article Id:${this.postForm.id}`
 
 			//     // set tagsview title
 			//     this.setTagsViewTitle()
@@ -265,28 +246,15 @@
 				}
 			}
 		}
-
-		.word-counter {
-			width: 40px;
-			position: absolute;
-			right: 10px;
-			top: 0px;
-		}
 	}
 
 	.article-textarea ::v-deep {
 		textarea {
-			width: 600px;
 			padding-right: 40px;
 			resize: none;
 			border: none;
 			border-radius: 0px;
 			border-bottom: 1px solid #bfcbd9;
-		}
-	}
-	.article-textarea-l ::v-deep {
-		textarea {
-			width: 600px;
 		}
 	}
 </style>

@@ -20,22 +20,20 @@
 				</div>
 			</div>
 		</div>
-		<div class="image-preview">
+		<!-- <div class="image-preview">
 			<div v-show="imageUrl.length > 1" class="image-preview-wrapper">
 				<img :src="imageUrl" />
 				<div class="image-preview-action">
 					<i class="el-icon-delete" @click="rmImage" />
 				</div>
 			</div>
-		</div>
+		</div> -->
 	</div>
 </template>
 
 <script>
-	// import { getToken } from '@/api/qiniu'
-
 	export default {
-		name: "SingleImageUpload3",
+		name: "SingleImageUpload",
 		props: {
 			value: {
 				type: String,
@@ -61,6 +59,7 @@
 				this.$emit("input", val);
 			},
 			handleImageSuccess(file) {
+				console.log(file);
 				this.emitInput(file.files.file);
 			},
 			// beforeUpload() {
@@ -102,7 +101,6 @@
 			position: relative;
 			border: 1px dashed #d9d9d9;
 			float: left;
-			margin-left: 50px;
 			.image-preview-wrapper {
 				position: relative;
 				width: 100%;
@@ -144,11 +142,10 @@
 			position: relative;
 			border: 1px dashed #d9d9d9;
 			float: left;
-			margin-left: 50px;
 			.app-fake-conver {
 				height: 44px;
 				position: absolute;
-				width: 100%; // background: rgba(0, 0, 0, .1);
+				width: 100%; 
 				text-align: center;
 				line-height: 64px;
 				color: #fff;

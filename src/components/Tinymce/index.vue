@@ -1,6 +1,6 @@
 <template>
   <div :class="{fullscreen:fullscreen}" class="tinymce-container" :style="{width:containerWidth}">
-    <textarea :id="tinymceId" class="tinymce-textarea" />
+    <textarea :id="tinymceId" class="tinymce-textarea" placeholder="1"/>
     <div class="editor-custom-btn-container">
       <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK" />
     </div>
@@ -8,17 +8,12 @@
 </template>
 
 <script>
-/**
- * docs:
- * https://panjiachen.github.io/vue-element-admin-site/feature/component/rich-editor.html#tinymce
- */
 import editorImage from './components/EditorImage'
 import plugins from './plugins'
 import toolbar from './toolbar'
 import load from './dynamicLoadScript'
 
-// why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
-const tinymceCDN = 'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
+const tinymceCDN = 'https://cdn.tiny.cloud/1/18p30epm7mo1v0rxitd87xkgp5gsfiqewygesntzxs41yy79/tinymce/5/tinymce.min.js'
 
 export default {
   name: 'Tinymce',
@@ -48,7 +43,7 @@ export default {
     height: {
       type: [Number, String],
       required: false,
-      default: 360
+      default: 400
     },
     width: {
       type: [Number, String],
@@ -112,8 +107,9 @@ export default {
         selector: `#${this.tinymceId}`,
         language: 'zh_CN',
         height: this.height,
-        body_class: 'panel-body ',
-        object_resizing: false,
+        placeholder: '从这里开始写正文',
+        body_class: 'panel-body',
+        object_resizing: true,
         toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
         menubar: this.menubar,
         plugins: plugins,
@@ -142,9 +138,6 @@ export default {
             _this.fullscreen = e.state
           })
         },
-        // it will try to keep these URLs intact
-        // https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@convert_urls/
-        // https://stackoverflow.com/questions/5196205/disable-tinymce-absolute-to-relative-url-conversions
         convert_urls: false
         // 整合七牛上传
         // images_dataimg_filter(img) {
@@ -225,9 +218,9 @@ export default {
 
 .editor-custom-btn-container {
   position: absolute;
-  right: 4px;
-  top: 4px;
-  /*z-index: 2005;*/
+  right: 6px;
+  top: 6px;
+  z-index: 2005;
 }
 
 .fullscreen .editor-custom-btn-container {

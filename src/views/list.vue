@@ -80,7 +80,6 @@
 </template>
 
 <script>
-	// import { fetchList } from '@/api/article'
 	export default {
 		name: "ArticleList",
 		data() {
@@ -120,7 +119,7 @@
 			// 编辑
 			handleEdit(id) {
 				console.log(id);
-				this.$router.push(`/example/edit/${id}`);
+				this.$router.push(`/edit/${id}`);
 			},
 			// 删除
 			handleDelete(index, row) {
