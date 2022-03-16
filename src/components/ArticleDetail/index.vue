@@ -137,14 +137,14 @@
 		coverUrl: "", // 文章封面
 		category: "", // 所属栏目
 		setTime: undefined, // 定时时间
-		keywords:"" // 关键词
+		keywords: "", // 关键词
 	};
 	const statusObj = {
 		title: "标题",
 		content: "内容",
 		coverUrl: "封面",
 		category: "栏目",
-		keywords:"关键词"
+		keywords: "关键词",
 	};
 	export default {
 		name: "ArticleDetail",
@@ -208,12 +208,11 @@
 					this.postForm.setTime = new Date(val).getTime();
 				},
 			},
-			
 		},
-		watch:{
-			dynamicTags(v){
+		watch: {
+			dynamicTags(v) {
 				this.postForm.keywords = v.join();
-			}
+			},
 		},
 		created() {
 			if (this.isEdit) {
@@ -253,7 +252,14 @@
 			handleInputConfirm() {
 				let inputValue = this.inputValue;
 				if (inputValue) {
-					this.dynamicTags.push(inputValue);
+					if (this.dynamicTags.length <= 5) {
+						this.dynamicTags.push(inputValue);
+					} else {
+						this.$message({
+							message: "关键词最多只能添加6个",
+							type: "warning",
+						});
+					}
 				}
 				this.inputVisible = false;
 				this.inputValue = "";

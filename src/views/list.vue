@@ -23,14 +23,18 @@
 				</template>
 			</el-table-column>
 
-			<el-table-column align="center" label="标题">
+			<el-table-column align="center" label="标题" show-overflow-tooltip>
 				<template slot-scope="scope">
 					<router-link :to="scope.row.url" class="link-type">
 						<span>{{ scope.row.title }}</span>
 					</router-link>
 				</template>
 			</el-table-column>
-
+			<el-table-column align="center" label="关键词" width="120px">
+				<template slot-scope="scope">
+					<span>{{ scope.row.keywords }}</span>
+				</template>
+			</el-table-column>
 			<el-table-column align="center" label="所属栏目" width="120px">
 				<template slot-scope="scope">
 					<span>{{ scope.row.category }}</span>
@@ -90,6 +94,7 @@
 						title: "标题1",
 						count: "2",
 						url: "#",
+						keywords:'11',
 						category: "视频中心",
 						pushTime: "2022.3.1 10:00",
 						setTime: "2022.3.1 08:00",
@@ -99,7 +104,7 @@
 				listLoading: false,
 				listQuery: {
 					page: 1,
-					limit: 20,
+					limit: 10,
 				},
 			};
 		},
