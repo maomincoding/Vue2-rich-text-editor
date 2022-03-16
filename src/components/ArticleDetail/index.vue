@@ -31,9 +31,10 @@
 				<el-form-item
 					label-width="100px"
 					label="所属栏目："
+					prop="category"
 					class="postInfo-container-item"
 				>
-					<el-select v-model="postForm.category" placeholder="请选择">
+					<el-select v-model="postForm.category" placeholder="请选择所属栏目">
 						<el-option
 							v-for="item in categoryData"
 							:key="item.value"
@@ -61,7 +62,7 @@
 						v-model="postForm.abstract"
 						type="textarea"
 						class="article-textarea-l"
-						:rows="2"
+						:rows="5"
 						maxlength="100"
 						show-word-limit
 						placeholder="请输入文章摘要"
@@ -69,14 +70,47 @@
 				</el-form-item>
 				<el-form-item
 					label-width="100px"
-					label="发布时间："
+					label="关键词："
+					prop="keywords"
+					class="postInfo-container-item"
+				>
+					<el-tag
+						:key="tag"
+						v-for="tag in dynamicTags"
+						closable
+						:disable-transitions="false"
+						@close="handleClose(tag)"
+					>
+						{{ tag }}
+					</el-tag>
+					<el-input
+						class="input-new-tag"
+						v-if="inputVisible"
+						v-model="inputValue"
+						ref="saveTagInput"
+						size="small"
+						@keyup.enter.native="handleInputConfirm"
+						@blur="handleInputConfirm"
+					>
+					</el-input>
+					<el-button
+						v-else
+						class="button-new-tag"
+						size="small"
+						@click="showInput"
+						>+ 增加关键词</el-button
+					>
+				</el-form-item>
+				<el-form-item
+					label-width="100px"
+					label="定时时间："
 					class="postInfo-container-item"
 				>
 					<el-date-picker
-						v-model="pushTime"
+						v-model="setTime"
 						type="datetime"
 						format="yyyy-MM-dd HH:mm:ss"
-						placeholder="选择发布时间"
+						placeholder="选择定时时间"
 					/>
 				</el-form-item>
 				<el-button
@@ -102,12 +136,15 @@
 		abstract: "", // 文章摘要
 		coverUrl: "", // 文章封面
 		category: "", // 所属栏目
-		pushTime: undefined, // 前台展示时间
+		setTime: undefined, // 定时时间
+		keywords:"" // 关键词
 	};
 	const statusObj = {
 		title: "标题",
 		content: "内容",
 		coverUrl: "封面",
+		category: "栏目",
+		keywords:"关键词"
 	};
 	export default {
 		name: "ArticleDetail",
@@ -130,6 +167,9 @@
 				}
 			};
 			return {
+				dynamicTags: [],
+				inputVisible: false,
+				inputValue: "",
 				postForm: Object.assign({}, defaultForm),
 				loading: false,
 				categoryData: [
@@ -154,19 +194,26 @@
 					coverUrl: [{ validator: validateRequire }],
 					title: [{ validator: validateRequire }],
 					content: [{ validator: validateRequire }],
+					category: [{ validator: validateRequire }],
 				},
 				tempRoute: {},
 			};
 		},
 		computed: {
-			pushTime: {
+			setTime: {
 				get() {
-					return +new Date(this.postForm.pushTime);
+					return +new Date(this.postForm.setTime);
 				},
 				set(val) {
-					this.postForm.pushTime = new Date(val).getTime();
+					this.postForm.setTime = new Date(val).getTime();
 				},
 			},
+			
+		},
+		watch:{
+			dynamicTags(v){
+				this.postForm.keywords = v.join();
+			}
 		},
 		created() {
 			if (this.isEdit) {
@@ -193,6 +240,24 @@
 			//     console.log(err)
 			//   })
 			// },
+
+			handleClose(tag) {
+				this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+			},
+			showInput() {
+				this.inputVisible = true;
+				this.$nextTick(() => {
+					this.$refs.saveTagInput.$refs.input.focus();
+				});
+			},
+			handleInputConfirm() {
+				let inputValue = this.inputValue;
+				if (inputValue) {
+					this.dynamicTags.push(inputValue);
+				}
+				this.inputVisible = false;
+				this.inputValue = "";
+			},
 			setTagsViewTitle() {
 				const title = "Edit Article";
 				const route = Object.assign({}, this.tempRoute, {
@@ -256,5 +321,23 @@
 			border-radius: 0px;
 			border-bottom: 1px solid #bfcbd9;
 		}
+	}
+	.article-textarea-l {
+		width: 460px;
+	}
+	.el-tag + .el-tag {
+		margin-left: 10px;
+	}
+	.button-new-tag {
+		margin-left: 10px;
+		height: 32px;
+		line-height: 30px;
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+	.input-new-tag {
+		width: 90px;
+		margin-left: 10px;
+		vertical-align: bottom;
 	}
 </style>

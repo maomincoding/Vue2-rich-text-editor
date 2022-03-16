@@ -1,9 +1,9 @@
 <template>
   <div class="upload-container">
-    <el-button  icon="el-icon-upload" size="mini" class="upload-img" @click=" dialogVisible=true">
+    <el-button  size="mini" class="upload-img" @click=" dialogVisible=true">
       上传本地图片
     </el-button>
-    <el-dialog :visible.sync="dialogVisible">
+    <el-dialog :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
       <el-upload
         :multiple="true"
         :file-list="fileList"
@@ -19,10 +19,10 @@
          点击上传
         </el-button>
       </el-upload>
-      <el-button @click="dialogVisible = false">
+      <el-button @click="dialogVisible = false" size="small">
         取消
       </el-button>
-      <el-button type="primary" @click="handleSubmit">
+      <el-button type="primary" @click="handleSubmit" size="small">
         确认
       </el-button>
     </el-dialog>

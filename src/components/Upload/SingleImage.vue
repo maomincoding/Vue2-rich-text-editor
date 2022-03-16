@@ -8,11 +8,12 @@
 			class="image-uploader"
 			drag
 			action="https://httpbin.org/post"
+			:before-upload="beforeUpload"
 		>
 			<i class="el-icon-upload" />
-			<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+			<div class="el-upload__text">将文件<span class="good-size">(最佳大小：460*288)</span>拖到此处，或<em>点击上传</em></div>
 		</el-upload>
-		<div class="image-preview image-app-preview">
+		<div class="image-preview image-app-preview" v-loading="loading">
 			<div v-show="imageUrl.length > 1" class="image-preview-wrapper">
 				<img :src="imageUrl" />
 				<div class="image-preview-action">
@@ -42,6 +43,7 @@
 		},
 		data() {
 			return {
+				loading:false,
 				tempUrl: "",
 				dataObj: { token: "", key: "" },
 			};
@@ -60,9 +62,11 @@
 			},
 			handleImageSuccess(file) {
 				console.log(file);
+				this.loading = false;
 				this.emitInput(file.files.file);
 			},
-			// beforeUpload() {
+			beforeUpload() {
+			this.loading = true;
 			//   const _self = this
 			//   return new Promise((resolve, reject) => {
 			//     getToken().then(response => {
@@ -77,30 +81,27 @@
 			//       reject(false)
 			//     })
 			//   })
-			// }
+			}
 		},
 	};
 </script>
 
 <style lang="scss" scoped>
+	.good-size{
+		font-size: 12px;
+		color: #a3a0a0;
+	}
 	.upload-container {
 		width: 100%;
 		position: relative;
-		&:after {
-			content: "";
-			display: table;
-			clear: both;
-		}
 		.image-uploader {
 			width: 35%;
-			float: left;
 		}
 		.image-preview {
-			width: 200px;
-			height: 200px;
-			position: relative;
-			border: 1px dashed #d9d9d9;
-			float: left;
+			// width: 200px;
+			// height: 200px;
+			// position: relative;
+			// border: 1px dashed #d9d9d9;
 			.image-preview-wrapper {
 				position: relative;
 				width: 100%;
@@ -125,7 +126,7 @@
 				transition: opacity 0.3s;
 				cursor: pointer;
 				text-align: center;
-				line-height: 200px;
+				line-height: 288px;
 				.el-icon-delete {
 					font-size: 36px;
 				}
@@ -137,11 +138,10 @@
 			}
 		}
 		.image-app-preview {
-			width: 320px;
-			height: 180px;
+			width: 460px;
+			height: 288px;
 			position: relative;
 			border: 1px dashed #d9d9d9;
-			float: left;
 			.app-fake-conver {
 				height: 44px;
 				position: absolute;
