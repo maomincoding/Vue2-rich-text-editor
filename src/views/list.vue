@@ -107,19 +107,21 @@
 		methods: {
 			// 获取列表
 			getList() {
-			this.listLoading = true
-			fetch('http://localhost:8081/articleList',{
-				method:'GET'
-			}).then((res)=>res.json()).then((res)=>{
-				console.log(res);
-				this.list = res.data;
-				this.listLoading = false;
-			});
-			//   fetchList(this.listQuery).then(response => {
-			//     this.list = response.data.items
-			//     this.total = response.data.total
-			//     this.listLoading = false
-			//   })
+				this.listLoading = true;
+				fetch("http://localhost:8081/articleList", {
+					method: "GET",
+				})
+					.then((res) => res.json())
+					.then((res) => {
+						console.log(res);
+						this.list = res.data;
+						this.listLoading = false;
+					});
+				//   fetchList(this.listQuery).then(response => {
+				//     this.list = response.data.items
+				//     this.total = response.data.total
+				//     this.listLoading = false
+				//   })
 			},
 			// 编辑
 			handleEdit(id) {
@@ -147,16 +149,16 @@
 						});
 					});
 			},
-			useSearch(){
-				if(this.seachInput.length>0){
+			useSearch() {
+				if (this.seachInput.length > 0) {
 					console.log(this.seachInput);
-				} else{
+				} else {
 					this.$message({
-							message: "请输入内容",
-							type: "warning",
-					})
+						message: "请输入内容",
+						type: "warning",
+					});
 				}
-			}
+			},
 		},
 	};
 </script>
