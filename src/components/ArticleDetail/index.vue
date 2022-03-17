@@ -19,18 +19,21 @@
 								type="textarea"
 								class="article-textarea"
 								autosize
-								placeholder="请在这里输入标题"
+								maxlength="100"
+								show-word-limit
+								placeholder="请在这里输入标题（最多100个字）"
 							/>
 						</el-form-item>
 					</el-col>
 				</el-row>
 				<el-form-item prop="content" style="margin-bottom: 30px">
-					<Tinymce ref="editor" v-model="postForm.content" :height="600" />
+					<div style="height: 900px">
+						<Tinymce ref="editor" v-model="postForm.content" :height="900" />
+					</div>
 				</el-form-item>
-				<h2>发布设置</h2>
 				<el-form-item
-					label-width="100px"
-					label="所属栏目："
+					label-width="80px"
+					label="所属栏目"
 					prop="category"
 					class="postInfo-container-item"
 				>
@@ -47,16 +50,16 @@
 				<el-form-item
 					prop="coverUrl"
 					style="margin-bottom: 30px"
-					label-width="100px"
-					label="文章封面："
+					label-width="80px"
+					label="文章封面"
 				>
 					<Upload v-model="postForm.coverUrl" />
 				</el-form-item>
 
 				<el-form-item
 					style="margin-bottom: 40px"
-					label-width="100px"
-					label="文章摘要："
+					label-width="80px"
+					label="文章摘要"
 				>
 					<el-input
 						v-model="postForm.abstract"
@@ -69,8 +72,8 @@
 					/>
 				</el-form-item>
 				<el-form-item
-					label-width="100px"
-					label="关键词："
+					label-width="80px"
+					label="关键词"
 					prop="keywords"
 					class="postInfo-container-item"
 				>
@@ -91,6 +94,7 @@
 						size="small"
 						@keyup.enter.native="handleInputConfirm"
 						@blur="handleInputConfirm"
+						maxlength="6"
 					>
 					</el-input>
 					<el-button
@@ -102,8 +106,8 @@
 					>
 				</el-form-item>
 				<el-form-item
-					label-width="100px"
-					label="定时时间："
+					label-width="80px"
+					label="定时时间"
 					class="postInfo-container-item"
 				>
 					<el-date-picker
@@ -113,22 +117,21 @@
 						placeholder="选择定时时间"
 					/>
 				</el-form-item>
-				<el-button
-					v-loading="loading"
-					style="margin-left: 10px"
-					type="success"
-					@click="submitForm"
-				>
+			</div>
+		</el-form>
+		<div class="push-btn">
+			<div class="push-btn-inner">
+				<el-button v-loading="loading" type="success" @click="submitForm">
 					发布
 				</el-button>
 			</div>
-		</el-form>
+		</div>
 	</div>
 </template>
 
 <script>
 	import Tinymce from "@/components/Tinymce";
-	import Upload from "@/components/Upload/SingleImage";
+	import Upload from "./Upload/SingleImage";
 
 	const defaultForm = {
 		title: "", // 文章标题
@@ -298,12 +301,15 @@
 </script>
 
 <style lang="scss" scoped>
+	.form-container {
+		width: 840px;
+		margin: 0 auto;
+		padding-bottom:60px ;
+	}
 	.createPost-container {
 		position: relative;
 
 		.createPost-main-container {
-			padding: 40px 45px 20px 50px;
-
 			.postInfo-container {
 				position: relative;
 				margin-bottom: 10px;
@@ -325,6 +331,8 @@
 			resize: none;
 			border: none;
 			border-radius: 0px;
+			font-weight: 600;
+			font-size: 34px;
 			border-bottom: 1px solid #bfcbd9;
 		}
 	}
@@ -333,6 +341,11 @@
 	}
 	.el-tag + .el-tag {
 		margin-left: 10px;
+	}
+	::v-deep .el-form-item__content button {
+		&:nth-child(1) {
+			margin-left: 0;
+		}
 	}
 	.button-new-tag {
 		margin-left: 10px;
@@ -345,5 +358,17 @@
 		width: 90px;
 		margin-left: 10px;
 		vertical-align: bottom;
+	}
+	.push-btn {
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		background-color: rgba(133,144,166,.1);
+		&-inner {
+			width: 800px;
+			margin: 8px auto;
+			display: flex;
+			justify-content: flex-end;
+		}
 	}
 </style>

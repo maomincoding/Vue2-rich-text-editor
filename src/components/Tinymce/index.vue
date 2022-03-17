@@ -10,6 +10,7 @@
 				color="#1890ff"
 				class="editor-upload-btn"
 				@successCBK="imageSuccessCBK"
+				:dialogVisible.sync="dialogVisible"
 			/>
 		</div>
 	</div>
@@ -70,6 +71,7 @@
 				hasInit: false,
 				tinymceId: this.id,
 				fullscreen: false,
+				dialogVisible: false,
 			};
 		},
 		computed: {
@@ -124,9 +126,9 @@
 					height: this.height,
 					placeholder: "从这里开始写正文",
 					body_class: "panel-body",
-					object_resizing: true,
+					object_resizing: false,
+					resize:false,
 					toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
-					menubar: this.menubar,
 					plugins: plugins,
 					end_container_on_empty_block: true,
 					powerpaste_word_import: "clean",
@@ -151,6 +153,13 @@
 					setup(editor) {
 						editor.on("FullscreenStateChanged", (e) => {
 							_this.fullscreen = e.state;
+						});
+						editor.ui.registry.addButton("imageButton", {
+							icon: "image",
+							tooltip: "上传图片",
+							onAction: () => {
+								_this.dialogVisible = true;
+							},
 						});
 					},
 					convert_urls: false,
@@ -217,6 +226,11 @@
 </script>
 
 <style lang="scss" scoped>
+	::v-deep .el-button--primary {
+		background-color: #207ab7;
+		border-color: #207ab7;
+	}
+
 	.tinymce-container {
 		position: relative;
 		line-height: normal;
@@ -236,8 +250,8 @@
 
 	.editor-custom-btn-container {
 		position: absolute;
-		right: 6px;
-		top: 6px;
+		left: 270px;
+		top: 3px;
 		z-index: 100;
 	}
 

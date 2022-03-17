@@ -2,7 +2,11 @@
 	<div class="app-container">
 		<div class="list-top">
 			<el-input placeholder="请输入内容" v-model="seachInput" class="input-box">
-				<el-button slot="append" icon="el-icon-search"></el-button>
+				<el-button
+					slot="append"
+					icon="el-icon-search"
+					@click="useSearch"
+				></el-button>
 			</el-input>
 			<router-link to="/create/">
 				<el-button type="primary" size="small"> 添加 </el-button>
@@ -88,18 +92,7 @@
 		name: "ArticleList",
 		data() {
 			return {
-				list: [
-					{
-						id: "1",
-						title: "标题1",
-						count: "2",
-						url: "#",
-						keywords:'11',
-						category: "视频中心",
-						pushTime: "2022.3.1 10:00",
-						setTime: "2022.3.1 08:00",
-					},
-				],
+				list: [],
 				seachInput: "",
 				listLoading: false,
 				listQuery: {
@@ -109,18 +102,25 @@
 			};
 		},
 		created() {
-			// this.getList()
+			this.getList();
 		},
 		methods: {
-			// getList() {
-			//   this.listLoading = true
+			// 获取列表
+			getList() {
+			this.listLoading = true
+			fetch('http://localhost:8081/articleList',{
+				method:'GET'
+			}).then((res)=>res.json()).then((res)=>{
+				console.log(res);
+				this.list = res.data;
+				this.listLoading = false;
+			});
 			//   fetchList(this.listQuery).then(response => {
 			//     this.list = response.data.items
 			//     this.total = response.data.total
 			//     this.listLoading = false
 			//   })
-			// }
-
+			},
 			// 编辑
 			handleEdit(id) {
 				console.log(id);
@@ -147,11 +147,24 @@
 						});
 					});
 			},
+			useSearch(){
+				if(this.seachInput.length>0){
+					console.log(this.seachInput);
+				} else{
+					this.$message({
+							message: "请输入内容",
+							type: "warning",
+					})
+				}
+			}
 		},
 	};
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+	.app-container {
+		padding: 20px;
+	}
 	.list-top {
 		display: flex;
 		justify-content: flex-end;
@@ -170,9 +183,9 @@
 		right: 15px;
 		top: 10px;
 	}
-	.bottom-pagination{
+	.bottom-pagination {
 		display: flex;
 		justify-content: flex-end;
-		margin-top:20px ;
+		margin-top: 20px;
 	}
 </style>
