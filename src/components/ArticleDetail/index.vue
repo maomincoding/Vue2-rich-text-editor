@@ -48,12 +48,12 @@
 					</el-select>
 				</el-form-item>
 				<el-form-item
-					prop="coverUrl"
+					prop="cover"
 					style="margin-bottom: 30px"
 					label-width="80px"
 					label="文章封面"
 				>
-					<Upload v-model="postForm.coverUrl" />
+					<Upload v-model="postForm.cover" />
 				</el-form-item>
 
 				<el-form-item
@@ -107,14 +107,14 @@
 				</el-form-item>
 				<el-form-item
 					label-width="80px"
-					label="定时时间"
+					label="定时发布"
 					class="postInfo-container-item"
 				>
 					<el-date-picker
-						v-model="setTime"
+						v-model="pushTime"
 						type="datetime"
 						format="yyyy-MM-dd HH:mm:ss"
-						placeholder="选择定时时间"
+						placeholder="选择发布时间"
 					/>
 				</el-form-item>
 			</div>
@@ -137,15 +137,15 @@
 		title: "", // 文章标题
 		content: "", // 文章内容
 		abstract: "", // 文章摘要
-		coverUrl: "", // 文章封面
+		cover: "", // 文章封面
 		category: "", // 所属栏目
-		setTime: undefined, // 定时时间
+		pushTime: undefined, // 发布时间
 		keywords: "", // 关键词
 	};
 	const statusObj = {
 		title: "标题",
 		content: "内容",
-		coverUrl: "封面",
+		cover: "封面",
 		category: "栏目",
 		keywords: "关键词",
 	};
@@ -194,7 +194,7 @@
 					},
 				],
 				rules: {
-					coverUrl: [{ validator: validateRequire }],
+					cover: [{ validator: validateRequire }],
 					title: [{ validator: validateRequire }],
 					content: [{ validator: validateRequire }],
 					category: [{ validator: validateRequire }],
@@ -203,12 +203,12 @@
 			};
 		},
 		computed: {
-			setTime: {
+			pushTime: {
 				get() {
-					return +new Date(this.postForm.setTime);
+					return +new Date(this.postForm.pushTime);
 				},
 				set(val) {
-					this.postForm.setTime = new Date(val).getTime();
+					this.postForm.pushTime = new Date(val).getTime();
 				},
 			},
 		},

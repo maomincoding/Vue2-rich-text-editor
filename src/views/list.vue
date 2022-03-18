@@ -1,7 +1,7 @@
 <template>
 	<div class="app-container">
 		<div class="list-top">
-			<el-input placeholder="请输入内容" v-model="seachInput" class="input-box">
+			<el-input placeholder="请输入内容" v-model="searchContent" class="input-box">
 				<el-button
 					slot="append"
 					icon="el-icon-search"
@@ -92,8 +92,29 @@
 		name: "ArticleList",
 		data() {
 			return {
-				list: [],
-				seachInput: "",
+				list: [
+					{
+						id: "1",
+						title: "标题1",
+						count: "2",
+						url: "#",
+						keywords: "11",
+						category: "视频中心",
+						pushTime: "2022.3.1 10:00",
+						setTime: "2022.3.1 08:00",
+					},
+					{
+						id: "2",
+						title: "标题2",
+						count: "2",
+						url: "#",
+						keywords: "11",
+						category: "视频中心",
+						pushTime: "2022.3.1 10:00",
+						setTime: "2022.3.1 08:00",
+					},
+				],
+				searchContent: "",
 				listLoading: false,
 				listQuery: {
 					page: 1,
@@ -102,27 +123,27 @@
 			};
 		},
 		created() {
-			this.getList();
+			// this.getList();
 		},
 		methods: {
 			// 获取列表
-			getList() {
-				this.listLoading = true;
-				fetch("http://localhost:8081/api/articleList", {
-					method: "GET",
-				})
-					.then((res) => res.json())
-					.then((res) => {
-						console.log(res);
-						this.list = res.data;
-						this.listLoading = false;
-					});
-				//   fetchList(this.listQuery).then(response => {
-				//     this.list = response.data.items
-				//     this.total = response.data.total
-				//     this.listLoading = false
-				//   })
-			},
+			// getList() {
+			// 	this.listLoading = true;
+			// 	fetch("http://localhost:8081/api/articleList", {
+			// 		method: "GET",
+			// 	})
+			// 		.then((res) => res.json())
+			// 		.then((res) => {
+			// 			console.log(res);
+			// 			this.list = res.data;
+			// 			this.listLoading = false;
+			// 		});
+			// 	//   fetchList(this.listQuery).then(response => {
+			// 	//     this.list = response.data.items
+			// 	//     this.total = response.data.total
+			// 	//     this.listLoading = false
+			// 	//   })
+			// },
 			// 编辑
 			handleEdit(id) {
 				console.log(id);
@@ -150,8 +171,8 @@
 					});
 			},
 			useSearch() {
-				if (this.seachInput.length > 0) {
-					console.log(this.seachInput);
+				if (this.searchContent.length > 0) {
+					console.log(this.searchContent);
 				} else {
 					this.$message({
 						message: "请输入内容",
