@@ -108,7 +108,7 @@
 			// 获取列表
 			getList() {
 				this.listLoading = true;
-				fetch("http://localhost:8081/articleList", {
+				fetch("http://localhost:8081/api/articleList", {
 					method: "GET",
 				})
 					.then((res) => res.json())
