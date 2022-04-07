@@ -355,7 +355,7 @@ export default {
 								type: 'success',
 								duration: 2000,
 							});
-							this.$router.push('/content/index');
+							this.$router.push('/');
 							this.loading = false;
 						})
 						.catch((err) => {
