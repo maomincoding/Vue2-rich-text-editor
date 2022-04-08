@@ -30,7 +30,7 @@ export function uploadImg(data) {
 	});
 }
 
-// 上传图片（正文）
+// 文章详情
 export function articleDetail(data) {
 	return request({
 		url: `${baseUrl}/api/content/articleDetail`,
