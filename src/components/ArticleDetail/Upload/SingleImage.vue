@@ -49,7 +49,7 @@ export default {
 	methods: {
 		// 删除图片
 		rmImage() {
-			this.$emit('input', null);
+			this.$emit('input', '');
 			this.imageUrl = '';
 		},
 		fileToBlob(file) {
